@@ -6,6 +6,20 @@
   <meta name="description" content="Prueba de velocidad de mecanografía con interfaz moderna y fondo 3D. WPM, precisión y clasificación." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://typingspeedtest.co/es/" />
+  <!-- Hreflang alternates -->
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="x-default" />
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="en" />
+  <link rel="alternate" href="https://typingspeedtest.co/es/" hreflang="es" />
+  <link rel="alternate" href="https://typingspeedtest.co/de/" hreflang="de" />
+  <link rel="alternate" href="https://typingspeedtest.co/tr/" hreflang="tr" />
+  <link rel="alternate" href="https://typingspeedtest.co/ar/" hreflang="ar" />
+  <link rel="alternate" href="https://typingspeedtest.co/fr/" hreflang="fr" />
+  <link rel="alternate" href="https://typingspeedtest.co/el/" hreflang="el" />
+  <link rel="alternate" href="https://typingspeedtest.co/ru/" hreflang="ru" />
+  <link rel="alternate" href="https://typingspeedtest.co/pt/" hreflang="pt" />
+  <link rel="alternate" href="https://typingspeedtest.co/cn/" hreflang="zh" />
+  <link rel="alternate" href="https://typingspeedtest.co/jp/" hreflang="ja" />
+
   <meta property="og:site_name" content="Typing Speed Test" />
   <meta property="og:title" content="Prueba de Mecanografía" />
   <meta property="og:description" content="Interfaz moderna con fondo 3D. WPM en tiempo real, CPM, precisión y clasificación." />
@@ -14,6 +28,22 @@
   <title>Prueba de Mecanografía</title>
   <link rel="stylesheet" href="../assets/style.css">
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Typing Speed Test",
+    "url": "https://typingspeedtest.co/es/",
+    "inLanguage": "es",
+    "description": "Prueba de velocidad de mecanografía con UI moderna y fondo 3D. WPM, CPM, precisión y clasificación.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "publisher": { "@type": "Organization", "name": "Typing Speed Test" },
+    "potentialAction": { "@type": "UseAction", "target": { "@type": "EntryPoint", "urlTemplate": "https://typingspeedtest.co/es/#test" } }
+  }
+  </script>
 </head>
 <body>
   <canvas id="bg3d" aria-hidden="true"></canvas>
