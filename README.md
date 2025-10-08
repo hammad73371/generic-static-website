@@ -9,7 +9,8 @@ A polished, responsive Typing Speed Test web app. Measure WPM, CPM, accuracy, an
 - Tests: Unit tests for WPM/CPM calculations
 - E2E: You can wire Playwright/Cypress; guidance below
 
-Live demo (self-hosted after deploy): http://localhost:8080
+Live site: https://typingspeedtest.co
+Local demo (self-hosted): http://localhost:8080
 
 ## Features
 
@@ -26,7 +27,8 @@ Live demo (self-hosted after deploy): http://localhost:8080
 
 ## Repository Structure
 
-- `index.html` — SPA UI markup
+- `index.html` — SPA UI markup (home)
+- `about.html`, `contact.html`, `terms.html`, `privacy.html`, `disclaimer.html` — Static pages
 - `assets/style.css` — Styles (dark-ready, responsive, accessible)
 - `assets/script.js` — App logic (typing engine, metrics, leaderboard)
 - `server/server.js` — Express API (passages, tests, leaderboard)

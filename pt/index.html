@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Teste de velocidade de digitação com UI moderna e fundo 3D. WPM, precisão e ranking." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typingspeedtest.co/pt/" />
+  <!-- Hreflang alternates -->
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="x-default" />
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="en" />
+  <link rel="alternate" href="https://typingspeedtest.co/es/" hreflang="es" />
+  <link rel="alternate" href="https://typingspeedtest.co/de/" hreflang="de" />
+  <link rel="alternate" href="https://typingspeedtest.co/tr/" hreflang="tr" />
+  <link rel="alternate" href="https://typingspeedtest.co/ar/" hreflang="ar" />
+  <link rel="alternate" href="https://typingspeedtest.co/fr/" hreflang="fr" />
+  <link rel="alternate" href="https://typingspeedtest.co/el/" hreflang="el" />
+  <link rel="alternate" href="https://typingspeedtest.co/ru/" hreflang="ru" />
+  <link rel="alternate" href="https://typingspeedtest.co/pt/" hreflang="pt" />
+  <link rel="alternate" href="https://typingspeedtest.co/cn/" hreflang="zh" />
+  <link rel="alternate" href="https://typingspeedtest.co/jp/" hreflang="ja" />
+
+  <meta property="og:title" content="Teste de Digitação" />
+  <meta property="og:description" content="UI moderna com fundo 3D. WPM em tempo real, CPM, precisão e ranking." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/pt/" />
+  <title>Teste de Digitação</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Typing Speed Test",
+    "url": "https://typingspeedtest.co/pt/",
+    "inLanguage": "pt",
+    "description": "Teste de velocidade de digitação com UI moderna e fundo 3D. WPM, CPM, precisão e ranking.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "publisher": { "@type": "Organization", "name": "Typing Speed Test" },
+    "potentialAction": { "@type": "UseAction", "target": { "@type": "EntryPoint", "urlTemplate": "https://typingspeedtest.co/pt/#test" } }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <a class="sr-only skip-link" href="#test">Ir para o teste</a>
+
+  <header class="site-header"><div class="container">
+    <div class="brand"><span class="logo" aria-hidden="true">⌨️</span><h1 class="app-title">Teste de Digitação</h1></div>
+    <div class="header-actions">
+      <div class="lang-switch">
+        <label for="siteLangSwitch" class="visually-hidden">Idioma</label>
+        <select id="siteLangSwitch" aria-label="Idioma do site">
+          <option value="/">EN</option><option value="/es/">ES</option><option value="/de/">DE</option><option value="/tr/">TR</option><option value="/ar/">AR</option><option value="/fr/">FR</option><option value="/el/">EL</option><option value="/ru/">RU</option><option value="/pt/">PT</option><option value="/cn/">CN</option><option value="/jp/">JP</option>
+        </select>
+      </div>
+      <button id="themeToggle" class="btn btn-ghost" aria-pressed="false">Escuro</button>
+    </div>
+  </div></header>
+
+  <main id="main" class="container" role="main">
+    <section class="hero card"><div class="hero-content"><h2 class="hero-title">Mais rápido. Mais preciso.</h2><p class="hero-sub">UI neon, fundo 3D e passagens longas para treinar resistência.</p></div></section>
+    <section class="card controls glass"><div class="controls-grid">
+      <div class="control"><label for="modeSelect">Modo</label><select id="modeSelect"><option value="time">Tempo</option><option value="words">Palavras</option></select></div>
+      <div class="control" id="timeControl"><label for="timeSelect">Tempo</label><select id="timeSelect"><option value="15">15s</option><option value="30">30s</option><option value="60" selected>60s</option><option value="120">120s</option><option value="custom">Personalizado…</option></select><input id="timeCustom" type="number" class="hidden" placeholder="Segundos"></div>
+      <div class="control hidden" id="wordsControl"><label for="wordsSelect">Palavras</label><select id="wordsSelect"><option value="50">50</option><option value="150" selected>150</option><option value="300">300</option><option value="600">600</option></select></div>
+      <div class="control"><label for="langSelect">Idioma do texto</label><select id="langSelect"><option value="en" selected>English</option><option value="ur">Urdu</option><option value="es">Español</option></select></div>
+      <div class="control"><label for="layoutSelect">Teclado</label><select id="layoutSelect"><option value="qwerty" selected>QWERTY</option><option value="azerty">AZERTY</option></select></div>
+      <div class="control toggles"><div class="toggle"><input type="checkbox" id="showPunct" checked><label for="showPunct">Pontuação</label></div><div class="toggle"><input type="checkbox" id="strictCaps"><label for="strictCaps">Maiúsculas strict</label></div><div class="toggle"><input type="checkbox" id="showKeyboard"><label for="showKeyboard">Dicas do teclado</label></div><div class="toggle"><input type="checkbox" id="keystrokeLog"><label for="keystrokeLog">Log</label></div></div>
+    </div><details class="custom-text"><summary>Texto personalizado</summary><textarea id="customText" rows="3" placeholder="Cole seu texto…"></textarea></details><div class="actions"><button id="startBtn" class="btn btn-primary accent">Começar</button><button id="resetBtn" class="btn btn-ghost" disabled>Reiniciar</button></div></section>
+
+    <section class="card test glass" id="test"><div id="passage" class="passage neon" lang="pt" dir="ltr" aria-live="polite"></div><div class="screen-readers" aria-live="assertive" aria-atomic="true"><span id="sr-current"></span></div><input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text"/><div id="keyboard" class="keyboard hidden"></div></section>
+    <section class="card metrics glass"><div class="metrics-grid"><div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div><div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div><div class="metric"><span class="label">Precisão</span><span id="accuracy" class="value">100%</span></div><div class="metric"><span class="label">Erros</span><span id="errors" class="value">0</span></div><div class="metric"><span class="label">Tempo</span><span id="time" class="value">0s</span></div><div class="metric"><span class="label">Média WPM</span><span id="avgWpm" class="value">0</span></div></div><canvas id="sparkline" height="40" role="img"></canvas></section>
+  </main>
+
+  <footer class="site-footer"><div class="container"><p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="/about.html">About</a> • <a href="/contact.html">Contact</a> • <a href="/terms.html">Terms</a> • <a href="/privacy.html">Privacy</a> • <a href="/disclaimer.html">Disclaimer</a></p></div></footer>
+  <script src="../assets/script.js" defer></script>
+</body>
+</html>

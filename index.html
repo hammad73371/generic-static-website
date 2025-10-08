@@ -4,9 +4,77 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Typing Speed Test - neon modern UI with 3D background, real-time WPM, accuracy, and leaderboard. WCAG AA accessible." />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="canonical" href="https://typingspeedtest.co/" />
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="x-default" />
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="en" />
+  <link rel="alternate" href="https://typingspeedtest.co/es/" hreflang="es" />
+  <link rel="alternate" href="https://typingspeedtest.co/de/" hreflang="de" />
+  <link rel="alternate" href="https://typingspeedtest.co/tr/" hreflang="tr" />
+  <link rel="alternate" href="https://typingspeedtest.co/ar/" hreflang="ar" />
+  <link rel="alternate" href="https://typingspeedtest.co/fr/" hreflang="fr" />
+  <link rel="alternate" href="https://typingspeedtest.co/el/" hreflang="el" />
+  <link rel="alternate" href="https://typingspeedtest.co/ru/" hreflang="ru" />
+  <link rel="alternate" href="https://typingspeedtest.co/pt/" hreflang="pt" />
+  <link rel="alternate" href="https://typingspeedtest.co/cn/" hreflang="zh" />
+  <link rel="alternate" href="https://typingspeedtest.co/jp/" hreflang="ja" />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Typing Speed Test" />
+  <meta property="og:title" content="Typing Speed Test" />
+  <meta property="og:description" content="Typing Speed Test - neon modern UI with 3D background, real-time WPM, accuracy, and leaderboard. WCAG AA accessible." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Typing Speed Test" />
+  <meta name="twitter:description" content="Neon-fast typing test with 3D background. Real-time WPM, CPM, accuracy, and leaderboard." />
+
   <title>Typing Speed Test</title>
   <link rel="stylesheet" href="assets/style.css">
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Typing Speed Test",
+        "url": "https://typingspeedtest.co/",
+        "description": "Typing Speed Test - neon modern UI with 3D background, real-time WPM, CPM, accuracy, and leaderboard. WCAG AA accessible.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "inLanguage": ["en", "ur", "es"],
+        "genre": ["Typing", "Productivity", "Education"],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Typing Speed Test"
+        },
+        "potentialAction": {
+          "@type": "UseAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://typingspeedtest.co/#test"
+          }
+        }
+      },
+      {
+        "@type": "WebSite",
+        "name": "Typing Speed Test",
+        "url": "https://typingspeedtest.co/"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <canvas id="bg3d" aria-hidden="true"></canvas>
@@ -19,7 +87,22 @@
         <h1 class="app-title">Typing Speed Test</h1>
       </div>
       <div class="header-actions">
-        <a class="btn btn-ghost" href="tools/download.html" aria-label="Download project as zip">Download ZIP</a>
+        <div class="lang-switch">
+          <label for="siteLangSwitch" class="visually-hidden">Language</label>
+          <select id="siteLangSwitch" aria-label="Site language">
+            <option value="/">EN</option>
+            <option value="/es/">ES</option>
+            <option value="/de/">DE</option>
+            <option value="/tr/">TR</option>
+            <option value="/ar/">AR</option>
+            <option value="/fr/">FR</option>
+            <option value="/el/">EL</option>
+            <option value="/ru/">RU</option>
+            <option value="/pt/">PT</option>
+            <option value="/cn/">CN</option>
+            <option value="/jp/">JP</option>
+          </select>
+        </div>
         <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Toggle dark mode">Dark</button>
       </div>
     </div>
@@ -175,7 +258,7 @@
 
   <footer class="site-footer" role="contentinfo">
     <div class="container">
-      <p>&copy; 2025 Typing Speed Test • <a href="https://github.com" rel="noopener">Source</a> • <a href="tools/download.html">Download ZIP</a></p>
+      <p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="about.html">About</a> • <a href="contact.html">Contact</a> • <a href="terms.html">Terms</a> • <a href="privacy.html">Privacy</a> • <a href="disclaimer.html">Disclaimer</a></p>
     </div>
   </footer>
 

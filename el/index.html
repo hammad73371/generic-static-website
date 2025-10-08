@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Τεστ ταχύτητας πληκτρολόγησης με μοντέρνο UI και 3D φόντο. WPM, ακρίβεια και leaderboard." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typingspeedtest.co/el/" />
+  <!-- Hreflang alternates -->
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="x-default" />
+  <link rel="alternate" href="https://typingspeedtest.co/" hreflang="en" />
+  <link rel="alternate" href="https://typingspeedtest.co/es/" hreflang="es" />
+  <link rel="alternate" href="https://typingspeedtest.co/de/" hreflang="de" />
+  <link rel="alternate" href="https://typingspeedtest.co/tr/" hreflang="tr" />
+  <link rel="alternate" href="https://typingspeedtest.co/ar/" hreflang="ar" />
+  <link rel="alternate" href="https://typingspeedtest.co/fr/" hreflang="fr" />
+  <link rel="alternate" href="https://typingspeedtest.co/el/" hreflang="el" />
+  <link rel="alternate" href="https://typingspeedtest.co/ru/" hreflang="ru" />
+  <link rel="alternate" href="https://typingspeedtest.co/pt/" hreflang="pt" />
+  <link rel="alternate" href="https://typingspeedtest.co/cn/" hreflang="zh" />
+  <link rel="alternate" href="https://typingspeedtest.co/jp/" hreflang="ja" />
+
+  <meta property="og:title" content="Τεστ Ταχύτητας Πληκτρολόγησης" />
+  <meta property="og:description" content="Μοντέρνο UI με 3D φόντο. WPM σε πραγματικό χρόνο, CPM, ακρίβεια και leaderboard." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/el/" />
+  <title>Τεστ Ταχύτητας Πληκτρολόγησης</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Typing Speed Test",
+    "url": "https://typingspeedtest.co/el/",
+    "inLanguage": "el",
+    "description": "Τεστ ταχύτητας πληκτρολόγησης με μοντέρνο UI και 3D φόντο. WPM, CPM, ακρίβεια και leaderboard.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Any",
+    "publisher": { "@type": "Organization", "name": "Typing Speed Test" },
+    "potentialAction": { "@type": "UseAction", "target": { "@type": "EntryPoint", "urlTemplate": "https://typingspeedtest.co/el/#test" } }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <a class="sr-only skip-link" href="#test">Μετάβαση στο τεστ</a>
+
+  <header class="site-header"><div class="container">
+    <div class="brand"><span class="logo" aria-hidden="true">⌨️</span><h1 class="app-title">Τεστ Ταχύτητας Πληκτρολόγησης</h1></div>
+    <div class="header-actions">
+      <div class="lang-switch">
+        <label for="siteLangSwitch" class="visually-hidden">Γλώσσα</label>
+        <select id="siteLangSwitch" aria-label="Γλώσσα ιστότοπου">
+          <option value="/">EN</option><option value="/es/">ES</option><option value="/de/">DE</option><option value="/tr/">TR</option><option value="/ar/">AR</option><option value="/fr/">FR</option><option value="/el/">EL</option><option value="/ru/">RU</option><option value="/pt/">PT</option><option value="/cn/">CN</option><option value="/jp/">JP</option>
+        </select>
+      </div>
+      <button id="themeToggle" class="btn btn-ghost" aria-pressed="false">Σκούρο</button>
+    </div>
+  </div></header>
+
+  <main id="main" class="container" role="main">
+    <section class="hero card"><div class="hero-content"><h2 class="hero-title">Πιο γρήγορα. Πιο ακριβώς.</h2><p class="hero-sub">Neon UI, 3D φόντο και εκτενή κείμενα για αντοχή.</p></div></section>
+    <!-- simplified localized shell; interactive logic from shared script -->
+    <section class="card controls glass"><div class="controls-grid">
+      <div class="control"><label for="modeSelect">Λειτουργία</label><select id="modeSelect"><option value="time">Χρόνος</option><option value="words">Λέξεις</option></select></div>
+      <div class="control" id="timeControl"><label for="timeSelect">Χρόνος</label><select id="timeSelect"><option value="15">15s</option><option value="30">30s</option><option value="60" selected>60s</option><option value="120">120s</option><option value="custom">Προσαρμοσμένο…</option></select><input id="timeCustom" type="number" class="hidden" placeholder="δευτ."></div>
+      <div class="control hidden" id="wordsControl"><label for="wordsSelect">Λέξεις</label><select id="wordsSelect"><option value="50">50</option><option value="150" selected>150</option><option value="300">300</option><option value="600">600</option></select></div>
+      <div class="control"><label for="langSelect">Γλώσσα κειμένου</label><select id="langSelect"><option value="en" selected>English</option><option value="ur">Urdu</option><option value="es">Español</option></select></div>
+      <div class="control"><label for="layoutSelect">Πληκτρολόγιο</label><select id="layoutSelect"><option value="qwerty" selected>QWERTY</option><option value="azerty">AZERTY</option></select></div>
+      <div class="control toggles"><div class="toggle"><input type="checkbox" id="showPunct" checked><label for="showPunct">Στίξη</label></div><div class="toggle"><input type="checkbox" id="strictCaps"><label for="strictCaps">Κεφαλαία αυστηρά</label></div><div class="toggle"><input type="checkbox" id="showKeyboard"><label for="showKeyboard">Ενδείξεις πληκτρολογίου</label></div><div class="toggle"><input type="checkbox" id="keystrokeLog"><label for="keystrokeLog">Καταγραφή</label></div></div>
+    </div><details class="custom-text"><summary>Προσαρμοσμένο κείμενο</summary><textarea id="customText" rows="3" placeholder="Επικολλήστε εδώ…"></textarea></details><div class="actions"><button id="startBtn" class="btn btn-primary accent">Έναρξη</button><button id="resetBtn" class="btn btn-ghost" disabled>Επαναφορά</button></div></section>
+
+    <section class="card test glass" id="test"><div id="passage" class="passage neon" lang="el" dir="ltr" aria-live="polite"></div><div class="screen-readers" aria-live="assertive" aria-atomic="true"><span id="sr-current"></span></div><input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text"/><div id="keyboard" class="keyboard hidden"></div></section>
+    <section class="card metrics glass"><div class="metrics-grid"><div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div><div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div><div class="metric"><span class="label">Ακρίβεια</span><span id="accuracy" class="value">100%</span></div><div class="metric"><span class="label">Σφάλματα</span><span id="errors" class="value">0</span></div><div class="metric"><span class="label">Χρόνος</span><span id="time" class="value">0s</span></div><div class="metric"><span class="label">ΜΟ WPM</span><span id="avgWpm" class="value">0</span></div></div><canvas id="sparkline" height="40" role="img" aria-label="WPM"></canvas></section>
+  </main>
+
+  <footer class="site-footer"><div class="container"><p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="/about.html">About</a> • <a href="/contact.html">Contact</a> • <a href="/terms.html">Terms</a> • <a href="/privacy.html">Privacy</a> • <a href="/disclaimer.html">Disclaimer</a></p></div></footer>
+  <script src="../assets/script.js" defer></script>
+</body>
+</html>
