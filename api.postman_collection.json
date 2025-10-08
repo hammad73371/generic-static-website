@@ -1,0 +1,48 @@
+{
+  "info": {
+    "name": "Typing Speed Test API",
+    "_postman_id": "b3c0d1b9-1234-4d2a-9f4e-abcdef123456",
+    "description": "Collection for passages, tests, and leaderboard endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "Get Random Passage (EN)",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/passages?lang=en&mode=random"
+      }
+    },
+    {
+      "name": "Submit Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Guest\",\n  \"country\": \"US\",\n  \"wpm\": 85,\n  \"accuracy\": 96,\n  \"duration\": 60,\n  \"language\": \"en\"\n}"
+        },
+        "url": "{{baseUrl}}/api/tests"
+      }
+    },
+    {
+      "name": "Leaderboard Daily",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/leaderboard?period=daily&limit=100"
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ]
+}
