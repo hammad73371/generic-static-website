@@ -4,9 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Typing Speed Test - neon modern UI with 3D background, real-time WPM, accuracy, and leaderboard. WCAG AA accessible." />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="canonical" href="https://your-domain.example/" />
+  <link rel="alternate" href="https://your-domain.example/" hreflang="x-default" />
+  <link rel="alternate" href="https://your-domain.example/" hreflang="en" />
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="Typing Speed Test" />
+  <meta property="og:title" content="Typing Speed Test" />
+  <meta property="og:description" content="Typing Speed Test - neon modern UI with 3D background, real-time WPM, accuracy, and leaderboard. WCAG AA accessible." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.example/" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Typing Speed Test" />
+  <meta name="twitter:description" content="Neon-fast typing test with 3D background. Real-time WPM, CPM, accuracy, and leaderboard." />
+
   <title>Typing Speed Test</title>
   <link rel="stylesheet" href="assets/style.css">
   <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Typing Speed Test",
+        "url": "https://your-domain.example/",
+        "description": "Typing Speed Test - neon modern UI with 3D background, real-time WPM, CPM, accuracy, and leaderboard. WCAG AA accessible.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "inLanguage": ["en", "ur", "es"],
+        "genre": ["Typing", "Productivity", "Education"],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Typing Speed Test"
+        },
+        "potentialAction": {
+          "@type": "UseAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://your-domain.example/#test"
+          }
+        }
+      },
+      {
+        "@type": "WebSite",
+        "name": "Typing Speed Test",
+        "url": "https://your-domain.example/"
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <canvas id="bg3d" aria-hidden="true"></canvas>
