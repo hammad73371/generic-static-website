@@ -3,16 +3,172 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Static Site</title>
+  <meta name="description" content="Typing Speed Test - measure your WPM, accuracy, and improve your typing. Supports multiple languages and modes. WCAG AA accessible." />
+  <title>Typing Speed Test</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <main>
-    <h1>Welcome to Your Static Site</h1>
+  <a class="sr-only skip-link" href="#test">Skip to typing test</a>
+
+  <header class="site-header" role="banner">
+    <div class="container">
+      <div class="brand">
+        <span aria-hidden="true" class="logo">⌨️</span>
+        <h1 class="app-title">Typing Speed Test</h1>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="tools/download.html" aria-label="Download project as zip">Download ZIP</a>
+        <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Toggle dark mode">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container" role="main">
+    <section aria-labelledby="controls-heading" class="card controls" role="region">
+      <h2 id="controls-heading" class="visually-hidden">Test Controls</h2>
+      <div class="controls-grid">
+        <div class="control">
+          <label for="modeSelect">Mode</label>
+          <select id="modeSelect" aria-describedby="modeHelp">
+            <option value="time">Time</option>
+            <option value="words">Word count</option>
+          </select>
+          <div id="modeHelp" class="help">Choose time or word-count mode</div>
+        </div>
+
+        <div class="control" id="timeControl">
+          <label for="timeSelect">Time</label>
+          <select id="timeSelect">
+            <option value="15">15s</option>
+            <option value="30" selected>30s</option>
+            <option value="60">60s</option>
+            <option value="120">120s</option>
+            <option value="custom">Custom…</option>
+          </select>
+          <input id="timeCustom" type="number" min="5" step="5" placeholder="Seconds" class="hidden" aria-label="Custom seconds">
+        </div>
+
+        <div class="control hidden" id="wordsControl">
+          <label for="wordsSelect">Word count</label>
+          <select id="wordsSelect">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50" selected>50</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="langSelect">Language</label>
+          <select id="langSelect">
+            <option value="en" selected>English (EN)</option>
+            <option value="ur">Urdu (UR)</option>
+            <option value="es">Español (ES)</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="layoutSelect">Keyboard</label>
+          <select id="layoutSelect">
+            <option value="qwerty" selected>QWERTY</option>
+            <option value="azerty">AZERTY</option>
+          </select>
+        </div>
+
+        <div class="control toggles">
+          <div class="toggle">
+            <input type="checkbox" id="showPunct" checked>
+            <label for="showPunct">Punctuation</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="strictCaps" checked>
+            <label for="strictCaps">Capitals strict</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="showKeyboard">
+            <label for="showKeyboard">Keyboard hints</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="keystrokeLog">
+            <label for="keystrokeLog">Keystroke log</label>
+          </div>
+        </div>
+      </div>
+
+      <details class="custom-text">
+        <summary>Use custom text</summary>
+        <label for="customText" class="visually-hidden">Paste custom text</label>
+        <textarea id="customText" rows="3" placeholder="Paste custom text here…"></textarea>
+      </details>
+
+      <div class="actions">
+        <button id="startBtn" class="btn btn-primary">Start</button>
+        <button id="resetBtn" class="btn btn-ghost" disabled>Reset</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="test-heading" class="card test" id="test" role="region">
+      <h2 id="test-heading" class="visually-hidden">Typing Area</h2>
+
+      <div id="passage" class="passage" lang="en" dir="ltr" aria-live="polite"></div>
+
+      <div class="screen-readers" aria-live="assertive" aria-atomic="true">
+        <span id="sr-current"></span>
+      </div>
+
+      <input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text" aria-label="Typing input"/>
+
+      <div id="keyboard" class="keyboard hidden" aria-hidden="true"></div>
+    </section>
+
+    <section aria-labelledby="metrics-heading" class="card metrics" role="region">
+      <h2 id="metrics-heading" class="visually-hidden">Metrics</h2>
+      <div class="metrics-grid">
+        <div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div>
+        <div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div>
+        <div class="metric"><span class="label">Accuracy</span><span id="accuracy" class="value">100%</span></div>
+        <div class="metric"><span class="label">Errors</span><span id="errors" class="value">0</span></div>
+        <div class="metric"><span class="label">Time</span><span id="time" class="value">0s</span></div>
+        <div class="metric"><span class="label">Avg WPM</span><span id="avgWpm" class="value">0</span></div>
+      </div>
+      <canvas id="sparkline" height="40" aria-label="WPM over recent tests" role="img"></canvas>
+    </section>
+
+    <section aria-labelledby="leaderboard-heading" class="card leaderboard" role="region">
+      <div class="leaderboard-header">
+        <h2 id="leaderboard-heading">Leaderboard</h2>
+        <div class="leaderboard-controls">
+          <label for="periodSelect" class="visually-hidden">Period</label>
+          <select id="periodSelect">
+            <option value="daily" selected>Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="all">All-time</option>
+          </select>
+          <label for="countrySelect" class="visually-hidden">Country</label>
+          <select id="countrySelect">
+            <option value="">All countries</option>
+            <option value="US">United States 🇺🇸</option>
+            <option value="GB">United Kingdom 🇬🇧</option>
+            <option value="PK">Pakistan 🇵🇰</option>
+            <option value="ES">España 🇪🇸</option>
+          </select>
+        </div>
+      </div>
+      <ol id="leaderboardList" class="lb-list" aria-live="polite"></ol>
+      <div class="note">Minimum 80% accuracy to appear on leaderboard.</div>
+    </section>
+
+    <section aria-labelledby="about-heading" class="card about" role="region">
+      <h2 id="about-heading">About</h2>
+      <p>Measure your typing speed with real-time WPM, CPM, accuracy, and error tracking. Accessible and mobile-first. Supports English, Urdu (RTL), and Spanish.</p>
+    </section>
   </main>
-  <footer>
-    <p>&copy; 2025 Your Name</p>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>&copy; 2025 Typing Speed Test • <a href="https://github.com" rel="noopener">Source</a> • <a href="tools/download.html">Download ZIP</a></p>
+    </div>
   </footer>
-  <script src="assets/script.js"></script>
+
+  <script src="assets/script.js" defer></script>
 </body>
 </html>
