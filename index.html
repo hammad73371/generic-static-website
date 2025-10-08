@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Typing Speed Test - measure your WPM, accuracy, and improve your typing. Supports multiple languages and modes. WCAG AA accessible." />
+  <meta name="description" content="Typing Speed Test - neon modern UI with 3D background, real-time WPM, accuracy, and leaderboard. WCAG AA accessible." />
   <title>Typing Speed Test</title>
   <link rel="stylesheet" href="assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
 </head>
 <body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
   <a class="sr-only skip-link" href="#test">Skip to typing test</a>
 
   <header class="site-header" role="banner">
@@ -24,7 +26,14 @@
   </header>
 
   <main id="main" class="container" role="main">
-    <section aria-labelledby="controls-heading" class="card controls" role="region">
+    <section class="hero card" aria-label="Intro">
+      <div class="hero-content">
+        <h2 class="hero-title">Go Faster. Get Accurate.</h2>
+        <p class="hero-sub">Neon-fast UI, immersive 3D background, and marathon-length passages to truly test endurance.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="controls-heading" class="card controls glass" role="region">
       <h2 id="controls-heading" class="visually-hidden">Test Controls</h2>
       <div class="controls-grid">
         <div class="control">
@@ -40,8 +49,8 @@
           <label for="timeSelect">Time</label>
           <select id="timeSelect">
             <option value="15">15s</option>
-            <option value="30" selected>30s</option>
-            <option value="60">60s</option>
+            <option value="30">30s</option>
+            <option value="60" selected>60s</option>
             <option value="120">120s</option>
             <option value="custom">Custom…</option>
           </select>
@@ -51,9 +60,10 @@
         <div class="control hidden" id="wordsControl">
           <label for="wordsSelect">Word count</label>
           <select id="wordsSelect">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50" selected>50</option>
+            <option value="50">50</option>
+            <option value="150" selected>150</option>
+            <option value="300">300</option>
+            <option value="600">600</option>
           </select>
         </div>
 
@@ -80,7 +90,7 @@
             <label for="showPunct">Punctuation</label>
           </div>
           <div class="toggle">
-            <input type="checkbox" id="strictCaps" checked>
+            <input type="checkbox" id="strictCaps">
             <label for="strictCaps">Capitals strict</label>
           </div>
           <div class="toggle">
@@ -101,15 +111,15 @@
       </details>
 
       <div class="actions">
-        <button id="startBtn" class="btn btn-primary">Start</button>
+        <button id="startBtn" class="btn btn-primary accent">Start</button>
         <button id="resetBtn" class="btn btn-ghost" disabled>Reset</button>
       </div>
     </section>
 
-    <section aria-labelledby="test-heading" class="card test" id="test" role="region">
+    <section aria-labelledby="test-heading" class="card test glass" id="test" role="region">
       <h2 id="test-heading" class="visually-hidden">Typing Area</h2>
 
-      <div id="passage" class="passage" lang="en" dir="ltr" aria-live="polite"></div>
+      <div id="passage" class="passage neon" lang="en" dir="ltr" aria-live="polite"></div>
 
       <div class="screen-readers" aria-live="assertive" aria-atomic="true">
         <span id="sr-current"></span>
@@ -120,7 +130,7 @@
       <div id="keyboard" class="keyboard hidden" aria-hidden="true"></div>
     </section>
 
-    <section aria-labelledby="metrics-heading" class="card metrics" role="region">
+    <section aria-labelledby="metrics-heading" class="card metrics glass" role="region">
       <h2 id="metrics-heading" class="visually-hidden">Metrics</h2>
       <div class="metrics-grid">
         <div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div>
@@ -133,7 +143,7 @@
       <canvas id="sparkline" height="40" aria-label="WPM over recent tests" role="img"></canvas>
     </section>
 
-    <section aria-labelledby="leaderboard-heading" class="card leaderboard" role="region">
+    <section aria-labelledby="leaderboard-heading" class="card leaderboard glass" role="region">
       <div class="leaderboard-header">
         <h2 id="leaderboard-heading">Leaderboard</h2>
         <div class="leaderboard-controls">
@@ -157,9 +167,9 @@
       <div class="note">Minimum 80% accuracy to appear on leaderboard.</div>
     </section>
 
-    <section aria-labelledby="about-heading" class="card about" role="region">
+    <section aria-labelledby="about-heading" class="card about glass" role="region">
       <h2 id="about-heading">About</h2>
-      <p>Measure your typing speed with real-time WPM, CPM, accuracy, and error tracking. Accessible and mobile-first. Supports English, Urdu (RTL), and Spanish.</p>
+      <p>Endurance-grade typing practice with neon aesthetics and interactive 3D. Push beyond a few lines—type long-form passages that simulate real work.</p>
     </section>
   </main>
 

@@ -1,10 +1,11 @@
 /**
- * Typing Speed Test - no-build frontend
+ * Typing Speed Test - no-build frontend (modern neon UI + 3D)
  * - Real-time WPM, CPM, accuracy, errors
  * - Time/Word modes, custom text, language (EN/UR/ES) with RTL handling
  * - Keyboard visualization, keystroke log (optional)
  * - Leaderboard integration with optional backend at /api
  * - Local persistence for recent tests and guest averages
+ * - Three.js reactive particle background
  * Accessibility: keyboard navigable, ARIA updates, WCAG AA contrast via theme
  */
 
@@ -59,7 +60,7 @@
     timer: null,
     startTime: 0,
     elapsed: 0,
-    totalTimeSec: 30, // default
+    totalTimeSec: 60, // modern default longer
     wordsTarget: null,
     passage: [],
     pos: 0, // char index
@@ -73,22 +74,19 @@
 
   const passages = {
     en: [
-      'The quick brown fox jumps over the lazy dog.',
-      'Typing tests help improve speed and accuracy.',
-      'Practice every day to build consistent typing habits.',
-      'A clean keyboard leads to a focused mind.',
-      'Measure words per minute and track your progress.',
+      'Long-form typing builds endurance and control. Maintain relaxed shoulders and a clear cadence as you move through each sentence with purpose and precision.',
+      'Accuracy first, then speed. Breathe, keep your eyes ahead of the cursor, and let rhythm carry you through extended paragraphs that mirror real work.',
+      'Neon speed is sustainable only with good form. Let your fingers travel the shortest paths and tap with confidence rather than force.'
     ],
     es: [
-      'El zorro marrón rápido salta sobre el perro perezoso.',
-      'Las pruebas de mecanografía mejoran velocidad y precisión.',
-      'Practica cada día para formar hábitos consistentes.',
-      'Una mente clara nace de una práctica constante.',
+      'La escritura de formato largo desarrolla resistencia y control. Mantén un ritmo claro y los hombros relajados mientras avanzas con precisión.',
+      'Primero la precisión, luego la velocidad. Deja que el ritmo te lleve a través de párrafos extensos que reflejan trabajo real.',
+      'La velocidad sostenible nace de la buena forma. Toca con confianza, no con fuerza.'
     ],
     ur: [
-      'تیز بھورا لومڑی سست کتے کے اوپر سے چھلانگ لگاتی ہے۔',
-      'ٹائپنگ ٹیسٹ رفتار اور درستگی میں بہتری لاتے ہیں۔',
-      'روزانہ مشق سے مستقل عادت بنتی ہے۔',
+      'طویل متن ٹائپ کرنا برداشت اور کنٹرول پیدا کرتا ہے۔ کندھے ڈھیلے رکھیں اور روانی کے ساتھ آگے بڑھیں۔',
+      'پہلے درستگی پھر رفتار۔ حقیقی کام کی طرح مسلسل پیراگراف میں توجہ قائم رکھیں۔',
+      'پائیدار رفتار اچھی عادت سے آتی ہے۔'
     ],
   };
 
@@ -210,7 +208,7 @@
     words.forEach((w, wi) => {
       const spanWord = document.createElement('span');
       spanWord.className = 'word';
-      w.split('').forEach((c, ci) => {
+      w.split('').forEach((c) => {
         const spanChar = document.createElement('span');
         spanChar.className = 'char';
         spanChar.textContent = c;
@@ -263,8 +261,9 @@
     el.cpm.textContent = String(cpm);
     el.accuracy.textContent = `${accuracy}%`;
     el.errors.textContent = String(state.errors);
-    const secLeft = state.wordsTarget ? Math.floor(elapsed / 1000) : Math.max(0, state.totalTimeSec - Math.floor(elapsed / 1000));
-    el.time.textContent = state.wordsTarget ? `${secLeft}s` : `${secLeft}s left`;
+    const sec = Math.floor((Date.now() - state.startTime) / 1000);
+    const timeLabel = el.modeSelect.value === 'words' ? `${sec}s` : `${Math.max(0, state.totalTimeSec - sec)}s left`;
+    el.time.textContent = timeLabel;
     drawSparkline();
   }
 
@@ -354,10 +353,12 @@
       expectedNode.classList.add('correct');
       state.correct++;
       state.pos++;
+      pulse3D(true);
     } else if (key.length === 1) {
       expectedNode.classList.add('error');
       state.errors++;
       state.pos++;
+      pulse3D(false);
     }
 
     highlightCurrent();
@@ -386,8 +387,8 @@
 
     // Determine target/time
     if (el.modeSelect.value === 'time') {
-      let secs = el.timeSelect.value === 'custom' ? Number(el.timeCustom.value || 30) : Number(el.timeSelect.value);
-      secs = Math.max(5, Math.min(600, secs));
+      let secs = el.timeSelect.value === 'custom' ? Number(el.timeCustom.value || 60) : Number(el.timeSelect.value);
+      secs = Math.max(5, Math.min(1800, secs));
       state.totalTimeSec = secs;
       el.time.textContent = `${secs}s left`;
     } else {
@@ -403,7 +404,7 @@
     el.passage.setAttribute('lang', state.lang);
 
     const chooseText = async () => {
-      let text = custom || await fetchPassage(lang);
+      let text = custom || await buildLongPassage(lang);
       text = normalizeText(text);
       if (el.modeSelect.value === 'words' && state.wordsTarget) {
         const words = text.split(' ');
@@ -542,6 +543,117 @@
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;'}[m]));
   }
+
+  // 3D background with Three.js
+  let three = { scene: null, camera: null, renderer: null, points: null, hue: 0 };
+  function init3D() {
+    const canvas = document.getElementById('bg3d');
+    if (!canvas || !window.THREE) return;
+    const { Scene, PerspectiveCamera, WebGLRenderer, BufferGeometry, Float32BufferAttribute, Points, PointsMaterial, AdditiveBlending, Color, Clock } = THREE;
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 80;
+    const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // particles
+    const count = 1500;
+    const positions = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3 + 0] = (Math.random() - 0.5) * 200;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 120;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+    }
+    const geom = new BufferGeometry();
+    geom.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    const mat = new PointsMaterial({
+      color: new Color('#7c3aed'),
+      size: 1.6,
+      transparent: true,
+      opacity: 0.9,
+      blending: AdditiveBlending,
+      depthWrite: false
+    });
+    const points = new Points(geom, mat);
+    scene.add(points);
+
+    const clock = new Clock();
+    function animate() {
+      const t = clock.getElapsedTime();
+      points.rotation.y = t * 0.05;
+      points.rotation.x = Math.sin(t * 0.2) * 0.1;
+      const h = (three.hue + t * 0.02) % 1;
+      mat.color.setHSL(h, 0.8, 0.6);
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function onResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onResize);
+
+    three = { scene, camera, renderer, points, hue: 0 };
+  }
+  function pulse3D(good) {
+    if (!three.points) return;
+    three.hue += good ? 0.05 : 0.15;
+  }
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    window.addEventListener('load', init3D);
+  } else {
+    window.addEventListener('DOMContentLoaded', init3D);
+  }
+
+  // Long passages builder
+  async function buildLongPassage(lang) {
+    const minWords = 250; // ensure lengthy test baseline
+    const parts = [];
+    let words = 0;
+
+    // try API several times for variety
+    for (let i = 0; i < 6 && words < minWords; i++) {
+      try {
+        const txt = await fetchPassage(lang);
+        parts.push(txt);
+        words += (txt.match(/\S+/g) || []).length;
+      } catch (_) {
+        break;
+      }
+    }
+    // fallback local paragraphs if still short
+    if (words < minWords) {
+      const local = longLocalPassages[lang] || longLocalPassages.en;
+      while (words < minWords) {
+        const s = local[Math.floor(Math.random() * local.length)];
+        parts.push(s);
+        words += (s.match(/\S+/g) || []).length;
+      }
+    }
+    return parts.join(' ');
+  }
+
+  const longLocalPassages = {
+    en: [
+      'Typing is not only about speed; it is about rhythm, posture, and the micro-decisions your fingers make as they travel the keyboard. This extended passage is designed to train endurance. As you progress, keep your shoulders relaxed, wrists neutral, and eyes scanning ahead of your current word. Small improvements compound over time: a fraction of a second saved on each word becomes minutes saved over the course of a day. Professional typists maintain accuracy first, then introduce bursts of speed once a stable cadence is set. Breathe, pace yourself, and avoid unnecessary corrections. When you make an error, continue forward and recover within the next words; do not dwell on a single mistake. The goal is consistency. Over a longer session your form will be tested: maintain even pressure, minimize travel, and keep an ergonomic posture. With practice, your flow improves, and the noise of hesitation fades into momentum.',
+      'Long form typing mirrors real-world tasks such as drafting reports, documenting features, or writing articles. Instead of isolated sentences, these paragraphs challenge you to sustain attention. Notice how your hands adjust when punctuation appears, or when capitalization demands a shift. The objective is reliable control. If you choose a strict capitalization mode, build the habit of using the shift key precisely, without overextending your fingers. Accuracy is the cornerstone of speed. Focus on clarity, then increase pace. By the end of this session you should feel a measured fatigue: that is the signal of productive training, not strain. Stretch your fingers, roll your shoulders, and hydrate between sets.',
+      'Momentum in typing is like cadence in running: a stable, repeatable beat that turns effort into effortless motion. The more you practice with extended passages, the more you internalize the rhythm of words. Avoid slamming keys; aim for confident, precise taps. Your keyboard layout hints can help you correct inefficient reaches. Watch for frequent errors and adjust your posture. Over time, your fingers will discover shorter paths and your mind will anticipate language patterns. This is the path to sustainable, high WPM with strong accuracy.'
+    ],
+    es: [
+      'Escribir no se trata solo de velocidad; se trata de ritmo, postura y las microdecisiones que toman tus dedos mientras recorren el teclado. Este pasaje extendido entrena la resistencia. Mantén los hombros relajados y la vista por delante de la palabra actual. Los pequeños avances se acumulan. La precisión primero, la velocidad después. Respira y evita correcciones innecesarias. La meta es la consistencia. Durante una sesión larga tu forma será desafiada: conserva una postura ergonómica y presión uniforme.',
+      'La mecanografía de formato largo refleja tareas reales como redactar informes o documentar funciones. En lugar de frases aisladas, estos párrafos te obligan a sostener la atención. Observa cómo ajustas la mano con la puntuación y las mayúsculas. Si eliges mayúsculas estrictas, usa la tecla shift con precisión. La precisión es la base de la velocidad. Al final deberías sentir una fatiga medida, señal de entrenamiento productivo, no de tensión.',
+      'El impulso en la escritura es como la cadencia al correr: un ritmo que convierte el esfuerzo en movimiento fluido. Practicar pasajes extendidos internaliza el ritmo de las palabras. Evita golpear las teclas; apunta a toques firmes y precisos. Con el tiempo tus dedos hallarán rutas más cortas y tu mente anticipará patrones del lenguaje.'
+    ],
+    ur: [
+      'طویل متن ٹائپ کرنا صرف رفتار نہیں بلکہ تسلسل، درستگی اور آرام دہ انداز کا نام ہے۔ یہ پیراگراف برداشت کی تربیت کے لیے ہے۔ کندھے ڈھیلے رکھیں، کلائی کو سیدھا رکھیں اور نظریں موجودہ لفظ سے آگے رکھیں۔ چھوٹی بہتریاں وقت کے ساتھ بڑی تبدیلی لاتی ہیں۔ پہلے درستگی قائم کریں پھر رفتار بڑھائیں۔ غلطی ہو تو آگے بڑھیں، ہر غلطی پر نہ رکیں۔ مقصد مستقل مزاجی ہے۔',
+      'طویل سیشن حقیقی دنیا کے کاموں سے مشابہ ہیں جیسے رپورٹ لکھنا یا دستاویزی تحریر۔ رموز اوقاف اور حروفِ تہجی کے بڑے حروف پر توجہ دیں۔ اگر سخت کیپٹلائزیشن موڈ منتخب کیا ہے تو شفٹ کی کو درستگی سے دبائیں۔ آخر میں ہلکی تھکن محسوس ہو تو یہ مفید مشق کی علامت ہے۔',
+      'رفتار کے ساتھ روانی بھی ضروری ہے۔ مسلسل مشق سے انگلیوں کی حرکت مختصر ہو جاتی ہے اور ذہن زبان کے پیٹرن کا اندازہ لگا لیتا ہے۔ اس طرح پائیدار رفتار اور مضبوط درستگی حاصل ہوتی ہے۔'
+    ]
+  };
 
   // Bindings
   el.startBtn.addEventListener('click', onStart);
