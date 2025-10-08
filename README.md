@@ -27,7 +27,8 @@ Local demo (self-hosted): http://localhost:8080
 
 ## Repository Structure
 
-- `index.html` — SPA UI markup
+- `index.html` — SPA UI markup (home)
+- `about.html`, `contact.html`, `terms.html`, `privacy.html`, `disclaimer.html` — Static pages
 - `assets/style.css` — Styles (dark-ready, responsive, accessible)
 - `assets/script.js` — App logic (typing engine, metrics, leaderboard)
 - `server/server.js` — Express API (passages, tests, leaderboard)
