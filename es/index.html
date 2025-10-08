@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Prueba de velocidad de mecanografía con interfaz moderna y fondo 3D. WPM, precisión y clasificación." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typingspeedtest.co/es/" />
+  <meta property="og:site_name" content="Typing Speed Test" />
+  <meta property="og:title" content="Prueba de Mecanografía" />
+  <meta property="og:description" content="Interfaz moderna con fondo 3D. WPM en tiempo real, CPM, precisión y clasificación." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/es/" />
+  <title>Prueba de Mecanografía</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <a class="sr-only skip-link" href="#test">Saltar al test</a>
+
+  <header class="site-header" role="banner">
+    <div class="container">
+      <div class="brand">
+        <span aria-hidden="true" class="logo">⌨️</span>
+        <h1 class="app-title">Prueba de Mecanografía</h1>
+      </div>
+      <div class="header-actions">
+        <div class="lang-switch">
+          <label for="siteLangSwitch" class="visually-hidden">Idioma</label>
+          <select id="siteLangSwitch" aria-label="Idioma del sitio">
+            <option value="/">EN</option>
+            <option value="/es/">ES</option>
+            <option value="/de/">DE</option>
+            <option value="/tr/">TR</option>
+            <option value="/ar/">AR</option>
+            <option value="/fr/">FR</option>
+            <option value="/el/">EL</option>
+            <option value="/ru/">RU</option>
+            <option value="/pt/">PT</option>
+            <option value="/cn/">CN</option>
+            <option value="/jp/">JP</option>
+          </select>
+        </div>
+        <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Cambiar tema">Oscuro</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container" role="main">
+    <section class="hero card" aria-label="Intro">
+      <div class="hero-content">
+        <h2 class="hero-title">Más rápido. Más preciso.</h2>
+        <p class="hero-sub">UI con neón, fondo 3D inmersivo y pasajes extensos para entrenar resistencia.</p>
+      </div>
+    </section>
+
+    <!-- The rest mirrors the root index structure -->
+    <section aria-labelledby="controls-heading" class="card controls glass" role="region">
+      <h2 id="controls-heading" class="visually-hidden">Controles</h2>
+      <div class="controls-grid">
+        <div class="control">
+          <label for="modeSelect">Modo</label>
+          <select id="modeSelect" aria-describedby="modeHelp">
+            <option value="time">Tiempo</option>
+            <option value="words">Palabras</option>
+          </select>
+          <div id="modeHelp" class="help">Elige por tiempo o número de palabras</div>
+        </div>
+
+        <div class="control" id="timeControl">
+          <label for="timeSelect">Tiempo</label>
+          <select id="timeSelect">
+            <option value="15">15s</option>
+            <option value="30">30s</option>
+            <option value="60" selected>60s</option>
+            <option value="120">120s</option>
+            <option value="custom">Personalizado…</option>
+          </select>
+          <input id="timeCustom" type="number" min="5" step="5" placeholder="Segundos" class="hidden" aria-label="Segundos personalizados">
+        </div>
+
+        <div class="control hidden" id="wordsControl">
+          <label for="wordsSelect">Palabras</label>
+          <select id="wordsSelect">
+            <option value="50">50</option>
+            <option value="150" selected>150</option>
+            <option value="300">300</option>
+            <option value="600">600</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="langSelect">Idioma del texto</label>
+          <select id="langSelect">
+            <option value="en" selected>English</option>
+            <option value="ur">Urdu</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="layoutSelect">Teclado</label>
+          <select id="layoutSelect">
+            <option value="qwerty" selected>QWERTY</option>
+            <option value="azerty">AZERTY</option>
+          </select>
+        </div>
+
+        <div class="control toggles">
+          <div class="toggle">
+            <input type="checkbox" id="showPunct" checked>
+            <label for="showPunct">Puntuación</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="strictCaps">
+            <label for="strictCaps">Mayúsculas estrictas</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="showKeyboard">
+            <label for="showKeyboard">Pistas del teclado</label>
+          </div>
+          <div class="toggle">
+            <input type="checkbox" id="keystrokeLog">
+            <label for="keystrokeLog">Registro de teclas</label>
+          </div>
+        </div>
+      </div>
+
+      <details class="custom-text">
+        <summary>Usar texto personalizado</summary>
+        <label for="customText" class="visually-hidden">Pega tu texto</label>
+        <textarea id="customText" rows="3" placeholder="Pega tu texto aquí…"></textarea>
+      </details>
+
+      <div class="actions">
+        <button id="startBtn" class="btn btn-primary accent">Comenzar</button>
+        <button id="resetBtn" class="btn btn-ghost" disabled>Reiniciar</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="test-heading" class="card test glass" id="test" role="region">
+      <h2 id="test-heading" class="visually-hidden">Área de escritura</h2>
+      <div id="passage" class="passage neon" lang="es" dir="ltr" aria-live="polite"></div>
+      <div class="screen-readers" aria-live="assertive" aria-atomic="true">
+        <span id="sr-current"></span>
+      </div>
+      <input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text" aria-label="Entrada de escritura"/>
+      <div id="keyboard" class="keyboard hidden" aria-hidden="true"></div>
+    </section>
+
+    <section aria-labelledby="metrics-heading" class="card metrics glass" role="region">
+      <h2 id="metrics-heading" class="visually-hidden">Métricas</h2>
+      <div class="metrics-grid">
+        <div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div>
+        <div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div>
+        <div class="metric"><span class="label">Precisión</span><span id="accuracy" class="value">100%</span></div>
+        <div class="metric"><span class="label">Errores</span><span id="errors" class="value">0</span></div>
+        <div class="metric"><span class="label">Tiempo</span><span id="time" class="value">0s</span></div>
+        <div class="metric"><span class="label">WPM prom.</span><span id="avgWpm" class="value">0</span></div>
+      </div>
+      <canvas id="sparkline" height="40" aria-label="WPM recientes" role="img"></canvas>
+    </section>
+
+    <section aria-labelledby="leaderboard-heading" class="card leaderboard glass" role="region">
+      <div class="leaderboard-header">
+        <h2 id="leaderboard-heading">Clasificación</h2>
+        <div class="leaderboard-controls">
+          <label for="periodSelect" class="visually-hidden">Periodo</label>
+          <select id="periodSelect">
+            <option value="daily" selected>Diario</option>
+            <option value="weekly">Semanal</option>
+            <option value="all">Total</option>
+          </select>
+          <label for="countrySelect" class="visually-hidden">País</label>
+          <select id="countrySelect">
+            <option value="">Todos</option>
+            <option value="ES">España 🇪🇸</option>
+            <option value="US">Estados Unidos 🇺🇸</option>
+          </select>
+        </div>
+      </div>
+      <ol id="leaderboardList" class="lb-list" aria-live="polite"></ol>
+      <div class="note">Mínimo 80% de precisión.</div>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="/about.html">About</a> • <a href="/contact.html">Contact</a> • <a href="/terms.html">Terms</a> • <a href="/privacy.html">Privacy</a> • <a href="/disclaimer.html">Disclaimer</a></p>
+    </div>
+  </footer>
+
+  <script src="../assets/script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Tippgeschwindigkeitstest mit modernem UI und 3D-Hintergrund. WPM, Genauigkeit und Rangliste." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typingspeedtest.co/de/" />
+  <meta property="og:site_name" content="Typing Speed Test" />
+  <meta property="og:title" content="Tippgeschwindigkeitstest" />
+  <meta property="og:description" content="Modernes UI mit 3D-Hintergrund. Echtzeit-WPM, CPM, Genauigkeit und Rangliste." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/de/" />
+  <title>Tippgeschwindigkeitstest</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <a class="sr-only skip-link" href="#test">Zum Test springen</a>
+
+  <header class="site-header" role="banner">
+    <div class="container">
+      <div class="brand">
+        <span aria-hidden="true" class="logo">⌨️</span>
+        <h1 class="app-title">Tippgeschwindigkeitstest</h1>
+      </div>
+      <div class="header-actions">
+        <div class="lang-switch">
+          <label for="siteLangSwitch" class="visually-hidden">Sprache</label>
+          <select id="siteLangSwitch" aria-label="Website-Sprache">
+            <option value="/">EN</option>
+            <option value="/es/">ES</option>
+            <option value="/de/">DE</option>
+            <option value="/tr/">TR</option>
+            <option value="/ar/">AR</option>
+            <option value="/fr/">FR</option>
+            <option value="/el/">EL</option>
+            <option value="/ru/">RU</option>
+            <option value="/pt/">PT</option>
+            <option value="/cn/">CN</option>
+            <option value="/jp/">JP</option>
+          </select>
+        </div>
+        <button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Thema umschalten">Dunkel</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container" role="main">
+    <section class="hero card" aria-label="Intro">
+      <div class="hero-content">
+        <h2 class="hero-title">Schneller. Präziser.</h2>
+        <p class="hero-sub">Neon-UI, immersiver 3D-Hintergrund und lange Passagen für Ausdauertraining.</p>
+      </div>
+    </section>
+
+    <!-- reuse same structure as root -->
+    <section aria-labelledby="controls-heading" class="card controls glass" role="region">
+      <h2 id="controls-heading" class="visually-hidden">Steuerung</h2>
+      <div class="controls-grid">
+        <div class="control">
+          <label for="modeSelect">Modus</label>
+          <select id="modeSelect">
+            <option value="time">Zeit</option>
+            <option value="words">Wörter</option>
+          </select>
+        </div>
+        <div class="control" id="timeControl">
+          <label for="timeSelect">Zeit</label>
+          <select id="timeSelect">
+            <option value="15">15s</option><option value="30">30s</option><option value="60" selected>60s</option><option value="120">120s</option><option value="custom">Benutzerdef.</option>
+          </select>
+          <input id="timeCustom" type="number" min="5" step="5" placeholder="Sekunden" class="hidden" aria-label="Benutzerdefinierte Sekunden">
+        </div>
+        <div class="control hidden" id="wordsControl">
+          <label for="wordsSelect">Wörter</label>
+          <select id="wordsSelect"><option value="50">50</option><option value="150" selected>150</option><option value="300">300</option><option value="600">600</option></select>
+        </div>
+        <div class="control">
+          <label for="langSelect">Textsprache</label>
+          <select id="langSelect"><option value="en" selected>English</option><option value="ur">Urdu</option><option value="es">Español</option></select>
+        </div>
+        <div class="control">
+          <label for="layoutSelect">Tastatur</label>
+          <select id="layoutSelect"><option value="qwerty" selected>QWERTY</option><option value="azerty">AZERTY</option></select>
+        </div>
+        <div class="control toggles">
+          <div class="toggle"><input type="checkbox" id="showPunct" checked><label for="showPunct">Zeichensetzung</label></div>
+          <div class="toggle"><input type="checkbox" id="strictCaps"><label for="strictCaps">Großschreibung strikt</label></div>
+          <div class="toggle"><input type="checkbox" id="showKeyboard"><label for="showKeyboard">Tastaturhinweise</label></div>
+          <div class="toggle"><input type="checkbox" id="keystrokeLog"><label for="keystrokeLog">Tastenlog</label></div>
+        </div>
+      </div>
+      <details class="custom-text"><summary>Eigenen Text nutzen</summary><label for="customText" class="visually-hidden">Text</label><textarea id="customText" rows="3" placeholder="Fügen Sie Ihren Text hier ein…"></textarea></details>
+      <div class="actions"><button id="startBtn" class="btn btn-primary accent">Start</button><button id="resetBtn" class="btn btn-ghost" disabled>Zurücksetzen</button></div>
+    </section>
+
+    <section aria-labelledby="test-heading" class="card test glass" id="test" role="region">
+      <h2 id="test-heading" class="visually-hidden">Tippen</h2>
+      <div id="passage" class="passage neon" lang="de" dir="ltr" aria-live="polite"></div>
+      <div class="screen-readers" aria-live="assertive" aria-atomic="true"><span id="sr-current"></span></div>
+      <input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text" aria-label="Eingabe"/>
+      <div id="keyboard" class="keyboard hidden" aria-hidden="true"></div>
+    </section>
+
+    <section aria-labelledby="metrics-heading" class="card metrics glass" role="region">
+      <h2 id="metrics-heading" class="visually-hidden">Metriken</h2>
+      <div class="metrics-grid">
+        <div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div>
+        <div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div>
+        <div class="metric"><span class="label">Genauigkeit</span><span id="accuracy" class="value">100%</span></div>
+        <div class="metric"><span class="label">Fehler</span><span id="errors" class="value">0</span></div>
+        <div class="metric"><span class="label">Zeit</span><span id="time" class="value">0s</span></div>
+        <div class="metric"><span class="label">Ø WPM</span><span id="avgWpm" class="value">0</span></div>
+      </div>
+      <canvas id="sparkline" height="40" aria-label="WPM" role="img"></canvas>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="/about.html">About</a> • <a href="/contact.html">Contact</a> • <a href="/terms.html">Terms</a> • <a href="/privacy.html">Privacy</a> • <a href="/disclaimer.html">Disclaimer</a></p>
+    </div>
+  </footer>
+
+  <script src="../assets/script.js" defer></script>
+</body>
+</html>

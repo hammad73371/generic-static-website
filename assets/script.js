@@ -46,6 +46,21 @@
     srCurrent: qs('#sr-current'),
   };
 
+  // Site language switcher (header)
+  const siteLang = document.getElementById('siteLangSwitch');
+  if (siteLang) {
+    siteLang.addEventListener('change', (e) => {
+      const url = e.target.value;
+      if (url) window.location.href = url;
+    });
+    // select current option
+    const p = window.location.pathname.replace(/index\.html$/, '');
+    for (const opt of siteLang.options) {
+      if (p === '/' && opt.value === '/') opt.selected = true;
+      else if (p !== '/' && p.startsWith(opt.value)) opt.selected = true;
+    }
+  }
+
   // Config
   const CONFIG = {
     apiBase: '', // empty uses same origin; override via window.TST_API_BASE if set
@@ -464,6 +479,54 @@
     ctx.clearRect(0,0,w,h);
     if (recents.length < 2) return;
     const max = Math.max(...recents.map(r => r.wpm || 0), 1);
+    const step = w / (recents.length - 1);
+    ctx.strokeStyle = '#60a5fa';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    recents.forEach((r, i) => {
+      const x = i * step;
+      const y = h - (r.wpm / max) * (h - 2) - 1;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  }
+
+  // Leaderboard
+  async function refreshLeaderboard() {
+    const period = el.periodSelect.value;
+    const country = el.countrySelect.value;
+    const list = el.leaderboardList;
+    list.innerHTML = '';
+    // Try API
+    try {
+      const url = new URL(`${CONFIG.apiBase || ''}/api/leaderboard`, window.location.origin);
+      url.searchParams.set('period', period);
+      url.searchParams.set('limit', '100');
+      if (country) url.searchParams.set('country', country);
+      const res = await fetch(url.toString(), { credentials: 'omit' });
+      if (res.ok) {
+        const data = await res.json();
+        renderLeaderboard(data.entries || []);
+        return;
+      }
+    } catch (_) { /* ignore */ }
+    // fallback to recent local results as a pseudo leaderboard
+    const recents = getRecentResults().map((r, i) => ({
+      name: 'Guest',
+      wpm: r.wpm,
+      accuracy: r.accuracy,
+      country: '',
+      ts: r.timestamp || (Date.now() - i*1000),
+    })).filter(e => e.accuracy >= CONFIG.leaderboardMinAccuracy)
+      .sort((a,b) => b.wpm - a.wpm)
+      .slice(0, 10);
+    renderLeaderboard(recents);
+  }
+
+  function renderLeaderboard(entries) {
+    el.leaderboardList.innerHTML = '';
+    if (!entries.length) {
+    ...recents.map(r => r.wpm || 0), 1);
     const step = w / (recents.length - 1);
     ctx.strokeStyle = '#60a5fa';
     ctx.lineWidth = 2;

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="现代UI与3D背景的打字速度测试。WPM、准确率与排行榜。" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://typingspeedtest.co/cn/" />
+  <meta property="og:title" content="打字速度测试" />
+  <meta property="og:description" content="现代UI与3D背景。实时WPM、CPM、准确率与排行榜。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://typingspeedtest.co/cn/" />
+  <title>打字速度测试</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js" defer></script>
+</head>
+<body>
+  <canvas id="bg3d" aria-hidden="true"></canvas>
+  <a class="sr-only skip-link" href="#test">跳到测试</a>
+
+  <header class="site-header"><div class="container">
+    <div class="brand"><span class="logo" aria-hidden="true">⌨️</span><h1 class="app-title">打字速度测试</h1></div>
+    <div class="header-actions">
+      <div class="lang-switch">
+        <label for="siteLangSwitch" class="visually-hidden">语言</label>
+        <select id="siteLangSwitch" aria-label="站点语言">
+          <option value="/">EN</option><option value="/es/">ES</option><option value="/de/">DE</option><option value="/tr/">TR</option><option value="/ar/">AR</option><option value="/fr/">FR</option><option value="/el/">EL</option><option value="/ru/">RU</option><option value="/pt/">PT</option><option value="/cn/">CN</option><option value="/jp/">JP</option>
+        </select>
+      </div>
+      <button id="themeToggle" class="btn btn-ghost" aria-pressed="false">深色</button>
+    </div>
+  </div></header>
+
+  <main id="main" class="container" role="main">
+    <section class="hero card"><div class="hero-content"><h2 class="hero-title">更快。更准。</h2><p class="hero-sub">霓虹界面、沉浸式3D背景与长段文本训练耐力。</p></div></section>
+
+    <section class="card controls glass"><div class="controls-grid">
+      <div class="control"><label for="modeSelect">模式</label><select id="modeSelect"><option value="time">时间</option><option value="words">单词数</option></select></div>
+      <div class="control" id="timeControl"><label for="timeSelect">时间</label><select id="timeSelect"><option value="15">15s</option><option value="30">30s</option><option value="60" selected>60s</option><option value="120">120s</option><option value="custom">自定义…</option></select><input id="timeCustom" type="number" class="hidden" placeholder="秒"></div>
+      <div class="control hidden" id="wordsControl"><label for="wordsSelect">单词数</label><select id="wordsSelect"><option value="50">50</option><option value="150" selected>150</option><option value="300">300</option><option value="600">600</option></select></div>
+      <div class="control"><label for="langSelect">文本语言</label><select id="langSelect"><option value="en" selected>English</option><option value="ur">Urdu</option><option value="es">Español</option></select></div>
+      <div class="control"><label for="layoutSelect">键盘</label><select id="layoutSelect"><option value="qwerty" selected>QWERTY</option><option value="azerty">AZERTY</option></select></div>
+      <div class="control toggles"><div class="toggle"><input type="checkbox" id="showPunct" checked><label for="showPunct">标点</label></div><div class="toggle"><input type="checkbox" id="strictCaps"><label for="strictCaps">大小写严格</label></div><div class="toggle"><input type="checkbox" id="showKeyboard"><label for="showKeyboard">键盘提示</label></div><div class="toggle"><input type="checkbox" id="keystrokeLog"><label for="keystrokeLog">按键日志</label></div></div>
+    </div><details class="custom-text"><summary>自定义文本</summary><textarea id="customText" rows="3" placeholder="在此粘贴文本…"></textarea></details><div class="actions"><button id="startBtn" class="btn btn-primary accent">开始</button><button id="resetBtn" class="btn btn-ghost" disabled>重置</button></div></section>
+
+    <section class="card test glass" id="test"><div id="passage" class="passage neon" lang="zh" dir="ltr" aria-live="polite"></div><div class="screen-readers" aria-live="assertive" aria-atomic="true"><span id="sr-current"></span></div><input id="hiddenInput" class="hidden-input" autocomplete="off" autocapitalize="none" spellcheck="false" inputmode="text"/><div id="keyboard" class="keyboard hidden"></div></section>
+    <section class="card metrics glass"><div class="metrics-grid"><div class="metric"><span class="label">WPM</span><span id="wpm" class="value">0</span></div><div class="metric"><span class="label">CPM</span><span id="cpm" class="value">0</span></div><div class="metric"><span class="label">准确率</span><span id="accuracy" class="value">100%</span></div><div class="metric"><span class="label">错误</span><span id="errors" class="value">0</span></div><div class="metric"><span class="label">时间</span><span id="time" class="value">0s</span></div><div class="metric"><span class="label">平均WPM</span><span id="avgWpm" class="value">0</span></div></div><canvas id="sparkline" height="40" role="img"></canvas></section>
+  </main>
+
+  <footer class="site-footer"><div class="container"><p>&copy; 2025 Typing Speed Test • <a href="/">Home</a> • <a href="/about.html">About</a> • <a href="/contact.html">Contact</a> • <a href="/terms.html">Terms</a> • <a href="/privacy.html">Privacy</a> • <a href="/disclaimer.html">Disclaimer</a></p></div></footer>
+  <script src="../assets/script.js" defer></script>
+</body>
+</html>
